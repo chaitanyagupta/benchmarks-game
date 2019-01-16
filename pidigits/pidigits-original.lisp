@@ -8,14 +8,15 @@
 ;;; (PUSH :PIDIGITS-OPTIMIZED *FEATURES*) before compiling this file to use
 ;;; optimized versions of COMP and EXTR.
 ;;;
-;;; On SBCL, (REQUIRE :SB-GMP) to use the gmplib for better bignum performance.
-;;;
 ;;; To use, call (PRINT-DIGITS N) where N is the number of digits to print.
 
 (defpackage #:pidigits-original
   (:use #:cl))
 
 (in-package #:pidigits-original)
+
+#+sbcl
+(require :sb-gmp)
 
 (declaim (optimize (speed 3) (debug 0) (space 0) (safety 0)))
 
