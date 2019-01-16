@@ -1,0 +1,5 @@
+*.core
+*.fasl
+.DS_Store
+*~
+*.gz
