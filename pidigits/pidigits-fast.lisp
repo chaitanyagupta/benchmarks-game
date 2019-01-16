@@ -46,23 +46,25 @@
   (values (floor (+ (* x (zq m)) (zr m))
                  (zt m))))
 
-(defun pi-generator ()
-  (let ((k 1)
-        (z (lft 1 0 0 1)))
+(defun lft-generator ()
+  (let ((k 0))
     (declare (type positive-fixnum k))
+    (lambda ()
+      (incf k)
+      (lft k (+ (* 4 k) 2) 0 (+ (* 2 k) 1)))))
+
+(defun pi-generator ()
+  (let ((z (lft 1 0 0 1))
+        (lft-gen (lft-generator)))
     (declare (type lft z))
-    (flet ((next-lft ()
-             (prog1
-                 (lft k (+ (* 4 k) 2) 0 (+ (* 2 k) 1))
-               (incf k))))
-      (lambda ()
-        (loop
-           (let ((y (extr z 3)))
-             (if (= y (extr z 4))
-                 (progn
-                   (setf z (comp (lft 10 (* -10 y) 0 1) z))
-                   (return y))
-                 (setf z (comp z (next-lft))))))))))
+    (lambda ()
+      (loop
+         (let ((y (extr z 3)))
+           (if (= y (extr z 4))
+               (progn
+                 (setf z (comp (lft 10 (* -10 y) 0 1) z))
+                 (return y))
+               (setf z (comp z (funcall lft-gen)))))))))
 
 (defun print-digits (n &optional (out *standard-output*))
   (declare (type stream out))
