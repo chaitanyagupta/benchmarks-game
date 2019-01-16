@@ -3,14 +3,15 @@
 ;;;
 ;;; Implements the algorithm on page 7 in a more Lispy way
 ;;;
-;;; On SBCL, (REQUIRE :SB-GMP) to use the gmplib for better bignum performance.
-;;;
 ;;; To use, call (PRINT-DIGITS N) where N is the number of digits to print.
 
 (defpackage #:pidigits-fast
   (:use #:cl))
 
 (in-package #:pidigits-fast)
+
+#+sbcl
+(require :sb-gmp)
 
 (declaim (optimize (speed 3) (debug 0) (space 0) (safety 0)))
 
