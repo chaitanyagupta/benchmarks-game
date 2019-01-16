@@ -17,6 +17,7 @@
 ;;; spigot algorith
 
 (defstruct (lft
+             (:constructor lft-defaults)
              (:constructor lft (zq zr zs zt))
              (:conc-name ""))
   (zq 0 :type integer)
@@ -24,16 +25,16 @@
   (zs 0 :type integer)
   (zt 0 :type integer))
 
-(declaim (ftype (function (lft lft) lft) comp))
+(declaim (ftype (function (lft lft &optional lft) lft) comp))
 
-(defun comp (m1 m2)
+(defun comp (m1 m2 &optional (place (lft-defaults)))
   (declare (type lft m1 m2))
   (let ((zq (zq m1)) (zr (zr m1)) (zt (zt m1))
         (zu (zq m2)) (zv (zr m2)) (zx (zt m2)))
-    (lft (* zq zu)
-         (+ (* zq zv) (* zr zx))
-         0
-         (* zt zx))))
+        (setf (zq place) (* zq zu)
+              (zr place) (+ (* zq zv) (* zr zx))
+              (zt place) (* zt zx))
+        place))
 
 (declaim (ftype (function (lft integer) (integer 0 9)) extr))
 
@@ -55,9 +56,9 @@
            (let ((y (extr z 3)))
              (if (= y (extr z 4))
                  (progn
-                   (setf z (comp (lft 10 (* -10 y) 0 1) z))
+                   (comp (lft 10 (* -10 y) 0 1) z z)
                    (return y))
-                 (setf z (comp z (next-lft))))))))))
+                 (comp z (next-lft) z))))))))
 
 (defun print-digits (n &optional (out *standard-output*))
   (let ((generator (pi-generator)))
